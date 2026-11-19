@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Biblioteca Lectura para Todos</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header>
+    <h1>Biblioteca Lectura para Todos</h1>
+</header>
+
+<main>
+    <h2>Libros disponibles</h2>
+    <p>Consulta los libros registrados en nuestra biblioteca.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Categoría</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-libros">
+            <tr><td colspan="4">Cargando...</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Registrar usuario</h2>
+
+    <form action="guardar_usuario.php" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" maxlength="80" required>
+
+        <label for="documento">Documento:</label>
+        <input type="text" id="documento" name="documento" maxlength="20" required>
+
+        <label for="telefono">Teléfono (opcional):</label>
+        <input type="tel" id="telefono" name="telefono" maxlength="15">
+
+        <button type="submit">Guardar usuario</button>
+    </form>
+
+    <h2>Registrar préstamo</h2>
+
+    <form action="guardar_prestamo.php" method="post">
+        <label for="usuario">Usuario:</label>
+        <select id="usuario" name="id_usuario" required>
+            <option value="">Cargando...</option>
+        </select>
+
+        <label for="libro">Libro:</label>
+        <select id="libro" name="id_libro" required>
+            <option value="">Cargando...</option>
+        </select>
+
+        <label for="fecha">Fecha de préstamo:</label>
+        <input type="date" id="fecha" name="fecha_prestamo" required>
+
+        <label for="devolucion">Fecha límite de devolución:</label>
+        <input type="date" id="devolucion" name="fecha_devolucion_prevista" required>
+
+        <button type="submit">Guardar préstamo</button>
+    </form>
+</main>
+
+<script>
+async function pedirJSON(url) {
+    const respuesta = await fetch(url);
+    const datos = await respuesta.json();
+    if (!datos.ok) throw new Error('Error del servidor');
+    return datos;
+}
+
+function llenarSelect(idSelect, items, idCampo, texto) {
+    const select = document.getElementById(idSelect);
+    select.innerHTML = '<option value="">Selecciona una opción</option>';
+    items.forEach(item => {
+        const opcion = document.createElement('option');
+        opcion.value = item[idCampo];
+        opcion.textContent = texto(item);
+        select.appendChild(opcion);
+    });
+}
+
+function llenarTabla(libros) {
+    const tbody = document.getElementById('tabla-libros');
+    tbody.innerHTML = '';
+    libros.forEach(libro => {
+        const fila = document.createElement('tr');
+        [libro.id_libro, libro.titulo, libro.autor, libro.categoria].forEach(valor => {
+            const celda = document.createElement('td');
+            celda.textContent = valor ?? '';
+            fila.appendChild(celda);
+        });
+        tbody.appendChild(fila);
+    });
+}
+
+async function cargarLibros() {
+    try {
+        const datos = await pedirJSON('listar_libros.php');
+        llenarTabla(datos.libros);
+        llenarSelect('libro', datos.libros, 'id_libro', l => `${l.titulo} - ${l.autor}`);
+    } catch (e) {
+        document.getElementById('tabla-libros').innerHTML =
+            '<tr><td colspan="4">Error al cargar los libros</td></tr>';
+        document.getElementById('libro').innerHTML = '<option value="">Error al cargar</option>';
+    }
+}
+
+async function cargarUsuarios() {
+    try {
+        const datos = await pedirJSON('listar_usuarios.php');
+        llenarSelect('usuario', datos.usuarios, 'id_usuario', u => `${u.nombre} (${u.documento})`);
+    } catch (e) {
+        document.getElementById('usuario').innerHTML = '<option value="">Error al cargar</option>';
+    }
+}
+
+cargarLibros();
+cargarUsuarios();
+</script>
+
+</body>
+</html>

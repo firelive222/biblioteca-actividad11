@@ -1,0 +1,102 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f2f6f3;
+}
+
+header {
+    background: #13763b;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    max-width: 760px;
+    margin: 24px auto;
+    padding: 24px;
+    background: white;
+    border-radius: 10px;
+}
+
+h2 {
+    color: #13763b;
+    margin-top: 28px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background: #13763b;
+    color: white;
+}
+
+tr:nth-child(even) td {
+    background: #f2f6f3;
+}
+
+form {
+    display: grid;
+    gap: 12px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+select,
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+select {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid #13763b;
+    border-color: #13763b;
+}
+
+button {
+    background: #13763b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0e5c2d;
+}
+
+@media (max-width: 600px) {
+    main {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+}
